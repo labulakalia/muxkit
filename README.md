@@ -22,3 +22,17 @@
     - server // 业务逻辑
       - server.go
     - dao    // 数据库操作
+
+
+
+## 路由
+url里的路由比url参数的值优先级高
+/test/{id}?id=10
+
+
+type HelloRequest struct {
+    HelloID   uint64 `json:"hello_id"`
+}
+
+请求URL /test/12?id=30
+最终的获取到的参数Hello.HelloID值为12，30会被覆盖，因为url里的参数值比？后面的优先级高

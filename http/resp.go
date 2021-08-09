@@ -12,7 +12,7 @@ import (
 
 type Error struct {
 	HTTPCode int32       // http code http的状态码 默认为500
-	Code     int32       // 业务返回码
+	Code     status.Code // 业务返回码
 	Message  interface{} // 业务错误信息的详情字段
 }
 
@@ -30,17 +30,20 @@ func Resp(w http.ResponseWriter, resp interface{}, err error) {
 			httpErr.HTTPCode = http.StatusOK
 		}
 		if httpErr.Code != 0 {
-			httpErr.HTTPCode = int32(status.Code_UNKNOWN)
+			httpErr.Code = status.Code_UNKNOWN
+		}
+		if httpErr.Message == nil {
+			httpErr.Message = fmt.Sprint(httpErr.Code)
 		}
 	case nil:
 		httpErr = Error{
 			HTTPCode: 200,
-			Code:     int32(status.Code_OK),
+			Code:     status.Code_OK,
 		}
 	default:
 		httpErr = Error{
 			HTTPCode: http.StatusInternalServerError,
-			Code:     int32(status.Code_UNKNOWN),
+			Code:     status.Code_UNKNOWN,
 			Message:  err.Error(),
 		}
 	}
@@ -55,4 +58,15 @@ func Resp(w http.ResponseWriter, resp interface{}, err error) {
 	w.WriteHeader(int(httpErr.HTTPCode))
 	w.Header().Add("X-Code", fmt.Sprint(httpErr.Code))
 	w.Header().Add("X-Message", fmt.Sprint(httpErr.Message))
+}
+
+func InvalidArgument(message ...interface{}) error {
+	err := &Error{
+		HTTPCode: http.StatusBadRequest,
+		Code:     status.Code_INVALID_ARGUMENT,
+	}
+	if len(message) > 0 {
+		err.Message = message[0]
+	}
+	return err
 }

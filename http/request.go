@@ -7,10 +7,13 @@ import (
 
 type CtxKeyType string
 
-const CtxKeyRequest CtxKeyType = "http_request"
+const (
+	KeyHttpRequest CtxKeyType = "http_request"
+	KeyHttpHeader
+)
 
 func Request2Context(r *http.Request) context.Context {
-	ctx := context.WithValue(r.Context(), CtxKeyRequest, r)
-	// TODO
+	ctx := context.WithValue(r.Context(), KeyHttpRequest, r)
+	ctx = context.WithValue(ctx, KeyHttpHeader, r.Header)
 	return ctx
 }

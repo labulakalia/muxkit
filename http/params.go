@@ -14,13 +14,13 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// POST Body  json
-func ParseData(r *http.Request, dest interface{}) error {
+// POST Body json
+func ParseData(r *http.Request, dest proto.Message) error {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
-	err = UnMarshal(data, dest.(proto.Message))
+	err = UnMarshal(data, dest)
 	if err != nil {
 		return err
 	}
@@ -42,6 +42,9 @@ func ParseParams(r *http.Request, dest interface{}) error {
 		vfield := v.Field(i)
 		tag := t.Field(i).Tag.Get("json")
 		value := urlValues.Get(tag)
+		if value == "" {
+			continue
+		}
 		switch vfield.Kind() {
 		case reflect.Uint64, reflect.Uint32, reflect.Uint16, reflect.Uint, reflect.Uint8:
 			valueuint64, err := strconv.ParseUint(value, 0, 10)

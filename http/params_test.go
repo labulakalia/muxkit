@@ -18,7 +18,7 @@ func TestParse(t *testing.T) {
 	nurl.Add("name", "test")
 	nurl.Add("is_true", "true")
 
-	req, err := http.NewRequest(http.MethodGet, "/test?"+nurl.Encode(), nil)
+	req, err := http.NewRequest(http.MethodGet, "/test/{vars}?"+nurl.Encode(), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,6 +35,4 @@ func TestParse(t *testing.T) {
 	if hello.IsTrue != true {
 		t.Fatal("IsTrue is not true")
 	}
-	t.Log(hello)
-
 }

@@ -1,0 +1,4 @@
+{
+    "editor.formatOnSave": true,
+    "clang-format.language.proto.style": "{AlignConsecutiveAssignments: true,AlignConsecutiveDeclarations: true,AllowShortFunctionsOnASingleLine: None,ColumnLimit: 0,IndentWidth: 4,Language: Proto}"
+}
